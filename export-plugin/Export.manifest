@@ -1,0 +1,20 @@
+
+{
+	"id" : "Export",
+	"short_name" : "Export",
+	"name" : "Export",
+	"description" : "This plugin, along with the Export Cell, allows to create and download a .xlsx spreadsheet containing the selected observations relative to a specific patient set.",
+	"group" : "community",
+	"plugin_version" : "1.0",
+	"changes" : "First version",
+	"i2b2_version" : "1.7.07",
+	"roles" : "[ 'DATA_LDS', 'DATA_DEID', 'DATA_PROT' ]", 
+	"authors" : "[ 'Matteo Gabetta' ]",
+	"institutions" : "[ 'Biomeris s.r.l.' ]",
+	"keywords" : "[ 'export', 'webclient' ]",
+    "package" : "package",
+	"userManual" : "manual",
+	"installGuide" : "install",
+	"configuration" : "config",
+	"wikiSite" : "wiki"
+}

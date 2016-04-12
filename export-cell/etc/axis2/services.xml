@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service name="ExportService" scope="application" class="com.biomeris.i2b2.export.ws.ExportService">
+    <description>
+        Export Cell
+    </description>
+    <operation name="testSession">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="openNewSession">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="export">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <operation name="exportList">
+        <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+    </operation>
+    <parameter name="ServiceClass">com.biomeris.i2b2.export.ws.ExportService</parameter>
+</service>

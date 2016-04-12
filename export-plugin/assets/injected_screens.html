@@ -1,0 +1,389 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+
+<!-- Copyright (c) 2015 Biomeris s.r.l. 
+All rights reserved. This program and the accompanying materials 
+are made available under the terms of the i2b2 Software License v2.1 
+which accompanies this distribution. 
+
+Contributors: 
+    Matteo Gabetta -->
+
+<html>
+    <body>
+        <div id='Export-mainDiv' class="w3-white" style="height: inherit">
+            <link rel="stylesheet" type="text/css" href="js-i2b2/cells/plugins/community/Export/assets/jMetro/css/jquery-ui.css">
+            
+            <div style="height: inherit; overflow: auto;" class="yui-content">
+                <div class="w3-btn-group w3-margin-16">
+                    <div id="ex_newExport_tab" class="w3-btn w3-border w3-blue" style="height:40px;width:150px" onclick="tabChange(0);">
+                        <h3>New export</h3>
+                    </div>
+                    <div id="ex_download_tab" class="w3-btn w3-border w3-white" style="height:40px;width:150px" onclick="tabChange(1);">
+                        <h3>Downloads</h3>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- New export -->
+                    <div id="ex_newExport_div" style="display: block">
+                        <div>
+                            <div class="w3-row w3-margin-8">
+                                <!-- Patient drop -->
+                                <div id="ex_patientDropDiv" class="w3-col s4 w3-margin-8" style="height:150px">
+                                    <!-- Unset -->
+                                    <div id="ex_patSetUnset" class="w3-border w3-rest" style="height: inherit; display: block;">
+                                        <div class="w3-margin-32 w3-center" style="line-height: 1.2;">
+                                            <label class="w3-xlarge w3-text-grey">Drag one patient set here</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Set -->
+                                    <div id="ex_patSetSet" style="border: 2px solid #009688; display: none; height: inherit;">
+                                        <div class="w3-row w3-margin-8" style="height: 100px">
+                                            <div class="w3-col s12">
+                                                <label id="ex_psetNameLab" label class="w3-large w3-left" style="line-height: 1.2">Pset name</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8">
+                                            <div class="w3-col s8">
+                                                <label id="ex_psetNumLab" class="w3-large w3-left">n patient(s)</label>
+                                            </div>
+                                            <div class="w3-col s4">
+                                                <img id="ex_pSetRemoveImg" src="js-i2b2/cells/plugins/community/Export/assets/images/delete-lock.png" style="max-width: 20px;  cursor: pointer;" class="w3-right" onmouseover="colorDelete('ex_pSetRemoveImg', true);" onmouseout="colorDelete('ex_pSetRemoveImg', false);" onclick="delPatset();">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Concept drop -->
+                                <div id="ex_conceptDropDiv" class="w3-col s7 w3-margin-8" style="height:150px">
+                                    <!-- Unset -->
+                                    <div id="ex_conceptUnset" class="w3-border w3-rest" style="height: inherit; display: block;">
+                                        <div class="w3-margin-32 w3-center" style="line-height: 1.2;">
+                                            <label class="w3-xlarge w3-text-grey">Drag one or more concepts here</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Set -->
+                                    <div id="ex_conceptSet" style="border: 2px solid #009688; display: none; height: inherit; overflow: auto">
+                                        <div id="ex_conc_proto" class="w3-row w3-margin-8" style="display: none">
+                                            <div class="w3-col s1">
+                                                <img src="js-i2b2/cells/plugins/community/Export/assets/images/delete-lock.png" style="max-width: 20px; cursor: pointer;" class="w3-left ex_delconcept">
+                                            </div>
+                                            <div class="w3-col s11">
+                                                <label class="ex_conceptname w3-large w3-left w3-margin-2">Concept (Modifier)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w3-margin-8">
+
+                            <!-- Name -->
+                            <div class="w3-row">
+                                <div class="w3-col s3">
+                                    <label id="ex_nameLab" class="w3-large w3-left w3-margin-8" title="The name of the export file">Name</label>
+                                </div>
+                                <div class="w3-col s5">
+                                    <input id="ex_nameInput" class="w3-input w3-medium w3-border" type="text" oninput="manageInputColor('ex_nameInput','ex_nameLab');">
+                                </div>
+                            </div>
+
+                            <!-- Type -->
+                            <div class="w3-row w3-margin-top w3-margin-bottom">
+                                <div class="w3-col s3">
+                                    <label class="w3-large w3-left w3-margin-8"  title="The type of the export file">Export type</label>
+                                </div>
+                                <div class="w3-col s5">
+                                    <div>
+                                        <input id="ex_typeRadioObs" class="w3-radio" type="radio" name="ex_type" value="obs" checked>
+                                        <label class="w3-validate w3-large w3-margin-8" title="One row per observation">Observations (1 per row)</label>
+                                    </div>
+                                    <div>
+                                        <input id="ex_typeRadioPat" class="w3-radio" type="radio" name="ex_type" value="pat">
+                                        <label class="w3-validate w3-large w3-margin-8" title="One row per patient with aggregated data for each concept">Patient aggregate</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Date -->
+                            <div class="w3-row">
+                                <div class="w3-col s3">
+                                    <label class="w3-large w3-left w3-margin-8" title="Filter data on the basis of their start date">Date filter</label>
+                                </div>
+                                <div class="w3-col s5">
+                                    <div class="w3-row">
+                                        <div class="w3-col s3">
+                                            <label id="ex_afterLab" class="w3-large w3-left w3-margin-8">After</label>
+                                        </div>
+                                        <div class="w3-col s5">
+                                            <input id="ex_afterInput" class="w3-input w3-medium w3-border" type="text" onchange="showHideDelete('ex_afterInput', 'ex_delAfterImg'); manageInputColor('ex_afterInput','ex_afterLab');">
+                                        </div>
+                                        <div class="w3-col s1 w3-margin-8">
+                                            <img id="ex_delAfterImg" src="js-i2b2/cells/plugins/community/Export/assets/images/delete-lock.png" style="max-width: 20px; display: none; cursor: pointer;" class="w3-right" onmouseover="colorDelete('ex_delAfterImg', true)" onmouseout="colorDelete('ex_delAfterImg', false)" onclick="clearInput('ex_afterInput'); showHideDelete('ex_afterInput', 'ex_delAfterImg'); manageInputColor('ex_afterInput','ex_afterLab');">
+                                        </div>
+                                    </div>
+                                    <div class="w3-row">
+                                        <div class="w3-col s3">
+                                            <label id="ex_beforeLab" class="w3-large w3-left w3-margin-8">Before</label>
+                                        </div>
+                                        <div class="w3-col s5">
+                                            <input id="ex_beforeInput" class="w3-input w3-medium w3-border" type="text" onchange="showHideDelete('ex_beforeInput', 'ex_delBeforeImg'); manageInputColor('ex_beforeInput','ex_beforeLab');">
+                                        </div>
+                                        <div class="w3-col s1 w3-margin-8">
+                                            <img id="ex_delBeforeImg" src="js-i2b2/cells/plugins/community/Export/assets/images/delete-lock.png" style="max-width: 20px; display: none; cursor: pointer;" class="w3-right" onmouseover="colorDelete('ex_delBeforeImg', true)" onmouseout="colorDelete('ex_delBeforeImg', false)" onclick="clearInput('ex_beforeInput'); showHideDelete('ex_beforeInput', 'ex_delBeforeImg'); manageInputColor('ex_beforeInput','ex_beforeLab');">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w3-row">
+                                <div class="w3-col s3">
+                                    <label class="w3-large w3-left w3-margin-8" title="Replace patient ids with ascending numbers starting from 1">Mask ids</label>
+                                </div>
+                                <div class="w3-col s5">
+                                    <input id="ex_maskCheck" class="w3-check" type="checkbox" onclick="checkBoxChange('ex_maskCheckLab')">
+                                    <label id="ex_maskCheckLab" class="w3-validate w3-large">No</label>
+                                </div>
+                            </div>
+
+                            <div class="w3-row">
+                                <div class="w3-col s3">
+                                    <label class="w3-large w3-left w3-margin-8" title="Archive (zip) the export file">Zip result</label>
+                                </div>
+                                <div class="w3-col s5">
+                                    <input id="ex_zipCheck" class="w3-check" type="checkbox" onclick="checkBoxChange('ex_zipCheckLab')">
+                                    <label id="ex_zipCheckLab" class="w3-validate w3-large">No</label>
+                                </div>
+                            </div>
+
+                            <div class="w3-row">
+                                <div class="w3-col s3">
+                                    <label class="w3-large w3-left w3-margin-8" title="Add to the export file a sheet containing one row per patient with the selected details">Patient details</label>
+                                </div>
+                                <div class="w3-col s5">
+                                    <input id="ex_detailsCheck" class="w3-check" type="checkbox" onclick="checkBoxChange('ex_detailsCheckLab');switchDetails('ex_detailsDiv')">
+                                    <label id="ex_detailsCheckLab" class="w3-validate w3-large">No</label>
+                                </div>
+                            </div>
+
+                            <div id="ex_detailsDiv" style="display: none">
+                                <div class="w3-row">
+                                    <div class="w3-col s3">
+                                        <label class="w3-validate w3-large">&nbsp;</label>
+                                    </div>
+                                    <div class="w3-col s9">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                <input id="ex_bdc" class="w3-check" type="checkbox">
+                                                <label class="w3-validate w3-large">Birth date</label></td>
+                                                <td>
+                                                <input id="ex_ddc" class="w3-check" type="checkbox">
+                                                <label class="w3-validate w3-large">Death date</label></td>
+                                                <td>
+                                                <input id="ex_lc" class="w3-check" type="checkbox">
+                                                <label class="w3-validate w3-large">Language</label></td>
+                                                <td>
+                                                <input id="ex_zcc" class="w3-check" type="checkbox">
+                                                <label class="w3-validate w3-large">Zip code</label></td>
+                                                <td>
+                                                <input id="ex_msc" class="w3-check" type="checkbox">
+                                                <label class="w3-validate w3-large">Marital status</label></td>
+
+                                            </tr>
+                                        </table>
+
+                                    </div>
+
+                                    <div class="w3-row">
+                                        <div class="w3-col s3">
+                                            <label class="w3-validate w3-large">&nbsp;</label>
+                                        </div>
+                                        <div class="w3-col s9">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                    <input id="ex_sc" class="w3-check" type="checkbox">
+                                                    <label class="w3-validate w3-large">Sex</label></td>
+                                                    <td>
+                                                    <input id="ex_rc" class="w3-check" type="checkbox">
+                                                    <label class="w3-validate w3-large">Race</label></td>
+                                                    <td>
+                                                    <input id="ex_vsc" class="w3-check" type="checkbox">
+                                                    <label class="w3-validate w3-large">Vital status</label></td>
+                                                    <td>
+                                                    <input id="ex_ic" class="w3-check" type="checkbox">
+                                                    <label class="w3-validate w3-large">Income</label></td>
+                                                    <td>
+                                                    <input id="ex_rec" class="w3-check" type="checkbox">
+                                                    <label class="w3-validate w3-large">Religion</label></td>
+
+                                                </tr>
+                                            </table>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <br />
+
+                            <div class="w3-margin-8">
+                                <div id="ex_exportButton" class="w3-btn w3-green w3-margin-right w3-large w3-disabled" onclick="runExport();">
+                                    Export
+                                </div>
+                                <div class="w3-btn w3-white w3-border w3-large" onclick="clearAll();">
+                                    Clear
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Downloads -->
+                    <div id="ex_download_div" style="display: none">
+                        <!-- Table -->
+                        <div id="ex_downloadCont" class="w3-margin-8">
+                            <div id="ex_downloadProto" style="display: none;">
+                                <div class="w3-row w3-margin-8 w3-margin-bottom" style="max-height: 20px;">
+                                    <div class="w3-col s4" style="padding: 6px 0px;">
+                                        <label class="w3-large ex_dName">&nbsp;</label>
+                                    </div>
+                                    <div class="w3-col s4" style="padding: 6px 0px;">
+                                        <label class="w3-large ex_dDate">&nbsp;</label>
+                                    </div>
+                                    <div class="w3-col s1">
+                                        <img src="js-i2b2/cells/plugins/community/Export/assets/images/info-lock.png" style="max-width: 25px; cursor: pointer; padding: 2px 0px;" class="ex_dInfo" title="Show export details">
+                                    </div>
+                                    <div class="w3-col s1">
+                                        <img src="js-i2b2/cells/plugins/community/Export/assets/images/delete-lock.png" style="max-width: 25px; cursor: pointer; padding: 2px 0px;" class="ex_dDel" title="Delete export">
+                                    </div>
+                                    <div class="w3-col s2 w3-center">
+                                        <img src="js-i2b2/cells/plugins/community/Export/assets/images/alert.png" style="max-width: 25px" class="ex_dAlert">
+                                        <a class="w3-btn w3-green w3-large ex_dDown" target="_blank"> Download </a>
+                                        <img src="js-i2b2/cells/plugins/community/Export/assets/images/load.png" style="max-width: 25px" class="w3-spin ex_dWait">
+                                    </div>
+                                </div>
+                                <div class="w3-row ex_dDetails" style="display: none;">
+                                    <div class="w3-col s12 w3-large">
+                                        <div class="w3-row w3-margin-8">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right">Status:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_status">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8 ex_det_errorDiv" style="display: none;">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right">Error type:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_errorType">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right">Patient set:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_pset">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="ex_det_conceptContainer">
+                                            <div class="w3-row w3-margin-8">
+                                                <div class="w3-col s2 w3-large">
+                                                    <label class="w3-text-grey w3-right">Concepts:&nbsp;&nbsp;</label>
+                                                </div>
+                                                <div class="w3-col s10 w3-large">
+                                                    <label class="w3-left ex_det_con1">&nbsp;</label>
+                                                </div>
+                                            </div>
+                                            <div class="w3-row w3-margin-8 ex_det_con2row" style="display: none">
+                                                <div class="w3-col s2 w3-large">
+                                                    <label class="w3-text-grey w3-right">&nbsp;&nbsp;</label>
+                                                </div>
+                                                <div class="w3-col s10 w3-large">
+                                                    <label class="w3-left ex_det_con2">&nbsp;</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right">File:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_file">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right">Type:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_type">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8 ex_det_dates">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right ex_det_startLab">Start date:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-left ex_det_startVal">&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right ex_det_endLab">End date:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-left ex_det_endVal">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right">Masked ids:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_mask">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right">Patient sheet:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_ps">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8 ex_det_pInifoDiv">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-grey w3-right">&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_pInfo">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                        <div class="w3-row w3-margin-8 ex_det_probDiv" style="display: none;">
+                                            <div class="w3-col s2 w3-large">
+                                                <label class="w3-text-red w3-right">Problems:&nbsp;&nbsp;</label>
+                                            </div>
+                                            <div class="w3-col s10 w3-large">
+                                                <label class="w3-left ex_det_problems">&nbsp;</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr id="ex_sepProto" class="w3-margin-8"/ style="display: none;">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+    </body>
+</html>
